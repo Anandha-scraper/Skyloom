@@ -199,3 +199,5 @@ If you encounter any issues:
 ---
 
 **Built with ❤️ using Next.js, TypeScript, and modern web technologies.**
+
+<!-- Updated for Vercel deployment -->
