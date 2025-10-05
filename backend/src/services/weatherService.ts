@@ -9,7 +9,7 @@ import {
   NasaApiRequest,
   TimeResolution,
   NASA_API_CONFIG
-} from '@climatesight/shared';
+} from '@skyloom/shared';
 import { NasaService } from './nasaService.js';
 import { RealWeatherService } from './realWeatherService.js';
 

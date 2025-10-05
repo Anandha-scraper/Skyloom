@@ -1,4 +1,4 @@
-import { WeatherDataPoint, WeatherSummary } from '@climatesight/shared';
+import { WeatherDataPoint, WeatherSummary } from '@skyloom/shared';
 
 const API_BASE_URL = 'http://localhost:3002/api';
 console.log('Using hardcoded API_BASE_URL:', API_BASE_URL);

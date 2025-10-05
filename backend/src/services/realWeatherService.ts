@@ -1,5 +1,5 @@
-import { WeatherDataPoint, WeatherSummary } from '@climatesight/shared';
-import { calculateWeatherSummary } from '@climatesight/shared';
+import { WeatherDataPoint, WeatherSummary } from '@skyloom/shared';
+import { calculateWeatherSummary } from '@skyloom/shared';
 import { config } from '../config/index.js';
 
 interface OpenWeatherResponse {

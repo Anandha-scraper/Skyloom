@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LucideIcon, TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { getTrendInfo } from "@climatesight/shared";
+import { getTrendInfo } from "@skyloom/shared";
 
 interface WeatherSummaryCardProps {
   title: string;

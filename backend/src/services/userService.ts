@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { User, CreateUserSchema } from '@climatesight/shared';
+import { User, CreateUserSchema } from '@skyloom/shared';
 import { z } from 'zod';
 
 type CreateUserData = z.infer<typeof CreateUserSchema>;

@@ -3,7 +3,7 @@ import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/userService.js';
-import { ApiResponse, UserApiResponse, CreateUserSchema } from '@climatesight/shared';
+import { ApiResponse, UserApiResponse, CreateUserSchema } from '@skyloom/shared';
 import { config } from '../config/index.js';
 
 const userService = new UserService();

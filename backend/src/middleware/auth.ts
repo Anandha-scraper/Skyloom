@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '@climatesight/shared';
+import { User } from '@skyloom/shared';
 import { config } from '../config/index.js';
 
 interface AuthRequest extends Request {

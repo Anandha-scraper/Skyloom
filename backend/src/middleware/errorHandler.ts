@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { ApiResponse } from '@climatesight/shared';
+import { ApiResponse } from '@skyloom/shared';
 
 export const errorHandler = (
   err: Error,

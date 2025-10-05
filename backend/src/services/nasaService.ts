@@ -1,5 +1,5 @@
-import { NasaPowerResponse, NasaApiRequest, WeatherDataPoint, TimeResolution } from '@climatesight/shared';
-import { NASA_API_CONFIG } from '@climatesight/shared';
+import { NasaPowerResponse, NasaApiRequest, WeatherDataPoint, TimeResolution } from '@skyloom/shared';
+import { NASA_API_CONFIG } from '@skyloom/shared';
 
 export class NasaService {
   private cache: Map<string, { data: WeatherDataPoint[]; timestamp: number }> = new Map();

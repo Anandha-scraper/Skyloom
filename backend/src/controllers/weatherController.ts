@@ -5,7 +5,7 @@ import {
   WeatherApiResponse, 
   SummaryApiResponse,
   LocationsApiResponse 
-} from '@climatesight/shared';
+} from '@skyloom/shared';
 
 const weatherService = new WeatherService();
 

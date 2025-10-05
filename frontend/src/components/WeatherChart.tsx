@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { WeatherDataPoint, generateChartData } from "@climatesight/shared";
+import { WeatherDataPoint, generateChartData } from "@skyloom/shared";
 
 interface WeatherChartProps {
   data: WeatherDataPoint[];
