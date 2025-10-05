@@ -12,7 +12,7 @@ import WeatherChart from "@/components/WeatherChart";
 import { 
   formatDate,
   MOCK_LOCATIONS 
-} from "@climatesight/shared";
+} from "@skyloom/shared";
 import { weatherApiService } from "@/services/weatherApi";
 import { Thermometer, CloudRain, Wind, Droplets } from "lucide-react";
 
