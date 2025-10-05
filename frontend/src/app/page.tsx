@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
-import LoginForm from "@/components/LoginForm";
+import SimpleLoginForm from "@/components/SimpleLoginForm";
 
 export default function LoginPage() {
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function LoginPage() {
       
       {/* Login form with higher z-index */}
       <div style={{ position: 'relative', zIndex: 2 }}>
-        <LoginForm />
+        <SimpleLoginForm />
       </div>
     </div>
   );

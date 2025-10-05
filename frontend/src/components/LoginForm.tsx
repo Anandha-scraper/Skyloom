@@ -3,17 +3,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Globe, Lock, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { login, loading } = useAuth();
   const [username, setUsername] = useState("demo");
   const [password, setPassword] = useState("demo");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login submitted", { username, password });
-    localStorage.setItem("isLoggedIn", "true");
-    router.push("/dashboard");
+    setError("");
+
+    const success = await login(username, password);
+    
+    if (success) {
+      router.push("/dashboard");
+    } else {
+      setError("Invalid credentials. Use 'demo' for both username and password.");
+    }
   };
 
   return (
@@ -30,7 +39,6 @@ export default function LoginForm() {
         margin: '0 auto'
       }}
     >
-      {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <div style={{ marginBottom: '1rem' }}>
           <Globe 
@@ -49,7 +57,7 @@ export default function LoginForm() {
           margin: '0 0 0.5rem 0',
           fontFamily: 'Inter, sans-serif'
         }}>
-          NASA Earth Observation
+          Skyloom
         </h1>
         <p style={{ 
           fontSize: '1rem', 
@@ -61,9 +69,22 @@ export default function LoginForm() {
         </p>
       </div>
 
-      {/* Form */}
+      {error && (
+        <div style={{
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: '8px',
+          padding: '0.75rem',
+          marginBottom: '1rem',
+          color: '#fca5a5',
+          fontSize: '0.875rem',
+          textAlign: 'center'
+        }}>
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {/* Username Field */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <label 
             htmlFor="username" 
@@ -117,7 +138,6 @@ export default function LoginForm() {
           </div>
         </div>
 
-        {/* Password Field */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <label 
             htmlFor="password" 
@@ -171,31 +191,31 @@ export default function LoginForm() {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button 
           type="submit" 
           data-testid="button-login"
+          disabled={loading}
           style={{
             width: '100%',
             height: '44px',
-            backgroundColor: '#3b82f6',
+            backgroundColor: loading ? '#6b7280' : '#3b82f6',
             color: '#ffffff',
             border: 'none',
             borderRadius: '8px',
             fontSize: '0.875rem',
             fontWeight: '500',
             fontFamily: 'Inter, sans-serif',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             transition: 'background-color 0.2s',
-            marginTop: '0.5rem'
+            marginTop: '0.5rem',
+            opacity: loading ? 0.7 : 1
           }}
-          onMouseEnter={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#2563eb'}
-          onMouseLeave={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#3b82f6'}
+          onMouseEnter={(e) => !loading && (e.target as HTMLButtonElement).style.backgroundColor = '#2563eb'}
+          onMouseLeave={(e) => !loading && (e.target as HTMLButtonElement).style.backgroundColor = '#3b82f6'}
         >
-          Sign In
+          {loading ? 'Signing In...' : 'Sign In'}
         </button>
 
-        {/* Demo Credentials */}
         <p style={{ 
           fontSize: '0.875rem', 
           color: '#94a3b8', 

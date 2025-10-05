@@ -30,11 +30,12 @@ export const config = {
     max: 100, // limit each IP to 100 requests per windowMs
   },
   
-  // Weather API configuration (for future integration)
+  // Weather API configuration
   weatherApi: {
     openWeatherMapKey: process.env.OPENWEATHERMAP_API_KEY,
     weatherApiKey: process.env.WEATHERAPI_KEY,
   },
+  
   
   // Logging
   logging: {

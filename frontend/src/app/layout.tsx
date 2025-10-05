@@ -14,8 +14,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NASA Earth Observation Dashboard",
-  description: "Analyze historical weather conditions including temperature, rainfall, wind, humidity and more using NASA Earth observation data across multiple years and locations.",
+  title: "Skyloom Dashboard",
+  description: "Analyze historical weather conditions including temperature, rainfall, wind, humidity and more using Skyloom weather data across multiple years and locations.",
 };
 
 export default function RootLayout({

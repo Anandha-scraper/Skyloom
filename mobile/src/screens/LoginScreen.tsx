@@ -40,7 +40,7 @@ export default function LoginScreen() {
         <View style={styles.loginCard}>
           <View style={styles.header}>
             <Ionicons name="globe" size={48} color="#3B82F6" />
-            <Text style={styles.title}>NASA Earth Observation</Text>
+            <Text style={styles.title}>Skyloom</Text>
             <Text style={styles.subtitle}>Access historical weather data and climate analysis</Text>
           </View>
 

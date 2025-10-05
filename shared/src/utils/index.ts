@@ -1,7 +1,24 @@
 import { WeatherDataPoint, WeatherSummary } from "../types";
 
 /**
+ * Seeded random number generator for consistent data generation
+ */
+class SeededRandom {
+  private seed: number;
+
+  constructor(seed: number) {
+    this.seed = seed;
+  }
+
+  next(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280;
+    return this.seed / 233280;
+  }
+}
+
+/**
  * Generates mock weather data for a given year range
+ * Uses seeded random number generator to ensure consistent data between server and client
  */
 export function generateMockData(startYear: number, endYear: number): WeatherDataPoint[] {
   const data: WeatherDataPoint[] = [];
@@ -10,18 +27,34 @@ export function generateMockData(startYear: number, endYear: number): WeatherDat
   
   let currentDate = new Date(startDate);
   
+  // Use a fixed seed based on the year range to ensure consistency
+  const seed = startYear * 1000 + endYear;
+  const rng = new SeededRandom(seed);
+  
   while (currentDate <= endDate) {
     const dayOfYear = Math.floor((currentDate.getTime() - new Date(currentDate.getFullYear(), 0, 0).getTime()) / 86400000);
     const seasonalTemp = 15 + 15 * Math.sin((dayOfYear / 365) * 2 * Math.PI - Math.PI / 2);
     const seasonalRain = 50 + 30 * Math.sin((dayOfYear / 365) * 2 * Math.PI);
+    const baseTemp = seasonalTemp + (rng.next() - 0.5) * 10;
     
     data.push({
       date: currentDate.toISOString().split('T')[0],
-      temperature: seasonalTemp + (Math.random() - 0.5) * 10,
-      rainfall: Math.max(0, seasonalRain + (Math.random() - 0.5) * 40),
-      windSpeed: 10 + Math.random() * 20,
-      humidity: 50 + Math.random() * 40,
-      pressure: 1010 + (Math.random() - 0.5) * 20,
+      temperature: {
+        avg: baseTemp,
+        min: baseTemp - 5 - rng.next() * 5,
+        max: baseTemp + 5 + rng.next() * 5,
+      },
+      humidity: {
+        relative: 50 + rng.next() * 40,
+        specific: 0.005 + rng.next() * 0.015,
+      },
+      wind: {
+        speed: 10 + rng.next() * 20,
+        direction: rng.next() * 360,
+      },
+      precipitation: Math.max(0, seasonalRain + (rng.next() - 0.5) * 40),
+      pressure: 1010 + (rng.next() - 0.5) * 20,
+      solarRadiation: 200 + rng.next() * 400,
     });
     
     currentDate.setDate(currentDate.getDate() + 1);
@@ -48,16 +81,30 @@ export function calculateWeatherSummary(data: WeatherDataPoint[]): WeatherSummar
   if (data.length === 0) {
     return {
       temperature: { min: 0, max: 0, avg: 0, trend: 0 },
-      rainfall: { min: 0, max: 0, avg: 0, trend: 0 },
-      windSpeed: { min: 0, max: 0, avg: 0, trend: 0 },
-      humidity: { min: 0, max: 0, avg: 0, trend: 0 },
+      humidity: {
+        relative: { min: 0, max: 0, avg: 0, trend: 0 },
+        specific: { min: 0, max: 0, avg: 0, trend: 0 },
+      },
+      wind: {
+        speed: { min: 0, max: 0, avg: 0, trend: 0 },
+        direction: { avg: 0, trend: 0 },
+      },
+      precipitation: { total: 0, avg: 0, trend: 0 },
+      pressure: { min: 0, max: 0, avg: 0, trend: 0 },
+      solarRadiation: { min: 0, max: 0, avg: 0, trend: 0 },
     };
   }
   
-  const temps = data.map(d => d.temperature);
-  const rain = data.map(d => d.rainfall);
-  const wind = data.map(d => d.windSpeed);
-  const humid = data.map(d => d.humidity);
+  const tempAvgs = data.map(d => d.temperature.avg);
+  const tempMins = data.map(d => d.temperature.min);
+  const tempMaxs = data.map(d => d.temperature.max);
+  const relHumidity = data.map(d => d.humidity.relative);
+  const specHumidity = data.map(d => d.humidity.specific);
+  const windSpeeds = data.map(d => d.wind.speed);
+  const windDirections = data.map(d => d.wind.direction);
+  const precipitation = data.map(d => d.precipitation);
+  const pressure = data.map(d => d.pressure);
+  const solarRadiation = data.map(d => d.solarRadiation);
   
   const calcStats = (values: number[]) => {
     const sorted = [...values].sort((a, b) => a - b);
@@ -75,11 +122,38 @@ export function calculateWeatherSummary(data: WeatherDataPoint[]): WeatherSummar
     };
   };
   
+  const calcDirectionStats = (values: number[]) => {
+    const avg = values.reduce((sum, v) => sum + v, 0) / values.length;
+    const halfLength = Math.floor(values.length / 2);
+    const firstHalfAvg = values.slice(0, halfLength).reduce((sum, v) => sum + v, 0) / halfLength;
+    const secondHalfAvg = values.slice(halfLength).reduce((sum, v) => sum + v, 0) / (values.length - halfLength);
+    const trend = secondHalfAvg - firstHalfAvg;
+    
+    return { avg, trend };
+  };
+  
   return {
-    temperature: calcStats(temps),
-    rainfall: calcStats(rain),
-    windSpeed: calcStats(wind),
-    humidity: calcStats(humid),
+    temperature: {
+      min: Math.min(...tempMins),
+      max: Math.max(...tempMaxs),
+      avg: tempAvgs.reduce((sum, v) => sum + v, 0) / tempAvgs.length,
+      trend: calcStats(tempAvgs).trend,
+    },
+    humidity: {
+      relative: calcStats(relHumidity),
+      specific: calcStats(specHumidity),
+    },
+    wind: {
+      speed: calcStats(windSpeeds),
+      direction: calcDirectionStats(windDirections),
+    },
+    precipitation: {
+      total: precipitation.reduce((sum, v) => sum + v, 0),
+      avg: precipitation.reduce((sum, v) => sum + v, 0) / precipitation.length,
+      trend: calcStats(precipitation).trend,
+    },
+    pressure: calcStats(pressure),
+    solarRadiation: calcStats(solarRadiation),
   };
 }
 
@@ -115,12 +189,26 @@ export function formatDateForChart(dateStr: string): string {
 }
 
 /**
- * Generates chart data with formatted dates
+ * Generates chart data with formatted dates and flattened structure for charts
  */
 export function generateChartData(data: WeatherDataPoint[]) {
   return data.map(d => ({
-    ...d,
+    date: d.date,
     dateFormatted: formatDateForChart(d.date),
+    // Flatten temperature data
+    temperature: d.temperature.avg,
+    temperatureMin: d.temperature.min,
+    temperatureMax: d.temperature.max,
+    // Flatten humidity data
+    humidity: d.humidity.relative,
+    humiditySpecific: d.humidity.specific,
+    // Flatten wind data
+    windSpeed: d.wind.speed,
+    windDirection: d.wind.direction,
+    // Other data
+    precipitation: d.precipitation,
+    pressure: d.pressure,
+    solarRadiation: d.solarRadiation,
   }));
 }
 

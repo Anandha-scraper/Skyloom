@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '@climatesight/shared';
+import { config } from '../config/index.js';
 
 interface AuthRequest extends Request {
   user?: User;
@@ -21,7 +22,7 @@ export const authenticateToken = (
     });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
+  jwt.verify(token, config.jwt.secret, (err, user) => {
     if (err) {
       return res.status(403).json({
         success: false,
@@ -45,7 +46,7 @@ export const optionalAuth = (
     return next();
   }
 
-  jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
+  jwt.verify(token, config.jwt.secret, (err, user) => {
     if (!err) {
       req.user = user as User;
     }

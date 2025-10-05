@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/userService.js';
 import { ApiResponse, UserApiResponse, CreateUserSchema } from '@climatesight/shared';
+import { config } from '../config/index.js';
 
 const userService = new UserService();
 
@@ -60,8 +61,8 @@ export const login = async (req: Request, res: Response) => {
     // Generate JWT token
     const token = jwt.sign(
       { id: user.id, username: user.username },
-      process.env.JWT_SECRET!,
-      { expiresIn: '24h' }
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn } as jwt.SignOptions
     );
 
     const response: UserApiResponse = {
@@ -122,8 +123,8 @@ export const register = async (req: Request, res: Response) => {
     // Generate JWT token
     const token = jwt.sign(
       { id: newUser.id, username: newUser.username },
-      process.env.JWT_SECRET!,
-      { expiresIn: '24h' }
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn } as jwt.SignOptions
     );
 
     const response: UserApiResponse = {

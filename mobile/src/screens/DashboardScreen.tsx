@@ -22,9 +22,12 @@ import {
 export default function DashboardScreen() {
   const navigation = useNavigation();
   const [selectedLocation, setSelectedLocation] = useState('New York, USA');
+  
+  // Use current year as default
+  const currentYear = new Date().getFullYear();
   const [dateRange, setDateRange] = useState({
-    start: new Date(2024, 0, 1),
-    end: new Date(2024, 11, 31),
+    start: new Date(currentYear, 0, 1),
+    end: new Date(currentYear, 11, 31),
   });
 
   const weatherData = filterWeatherDataByDateRange(
@@ -59,7 +62,7 @@ export default function DashboardScreen() {
             <Text style={styles.logoEmoji}>🌍</Text>
           </View>
           <View>
-            <Text style={styles.headerTitle}>NASA Earth Observation</Text>
+            <Text style={styles.headerTitle}>Skyloom</Text>
             <Text style={styles.headerSubtitle}>Weather Data Dashboard</Text>
           </View>
         </View>

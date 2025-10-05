@@ -177,21 +177,21 @@ export default function WeatherChart({ data }: WeatherChartProps) {
               Temperature
             </TabsTrigger>
             <TabsTrigger 
-              value="rainfall" 
-              data-testid="tab-rainfall"
+              value="precipitation" 
+              data-testid="tab-precipitation"
               style={{
                 fontSize: '0.875rem',
                 fontWeight: '500',
                 borderRadius: '8px',
                 padding: '0.5rem',
-                backgroundColor: activeTab === 'rainfall' ? 'rgba(15, 23, 42, 0.6)' : 'transparent',
-                color: activeTab === 'rainfall' ? '#f8fafc' : '#94a3b8',
+                backgroundColor: activeTab === 'precipitation' ? 'rgba(15, 23, 42, 0.6)' : 'transparent',
+                color: activeTab === 'precipitation' ? '#f8fafc' : '#94a3b8',
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.2s'
               }}
             >
-              Rainfall
+              Precipitation
             </TabsTrigger>
             <TabsTrigger 
               value="wind" 
@@ -257,9 +257,9 @@ export default function WeatherChart({ data }: WeatherChartProps) {
                   />
                   <Line 
                     type="monotone" 
-                    dataKey="rainfall" 
+                    dataKey="precipitation" 
                     stroke="#06b6d4" 
-                    name="Rainfall (mm)"
+                    name="Precipitation (mm)"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -267,7 +267,15 @@ export default function WeatherChart({ data }: WeatherChartProps) {
                     type="monotone" 
                     dataKey="windSpeed" 
                     stroke="#8b5cf6" 
-                    name="Wind Speed (km/h)"
+                    name="Wind Speed (m/s)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="humidity" 
+                    stroke="#10b981" 
+                    name="Humidity (%)"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -276,8 +284,13 @@ export default function WeatherChart({ data }: WeatherChartProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="temperature" className="mt-6">
-            <div className="bg-slate-900/30 rounded-xl p-4 border border-slate-700/30">
+          <TabsContent value="temperature" style={{ marginTop: '1.5rem' }}>
+            <div style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              border: '1px solid rgba(148, 163, 184, 0.2)'
+            }}>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />
@@ -302,8 +315,13 @@ export default function WeatherChart({ data }: WeatherChartProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="rainfall" className="mt-6">
-            <div className="bg-slate-900/30 rounded-xl p-4 border border-slate-700/30">
+          <TabsContent value="precipitation" style={{ marginTop: '1.5rem' }}>
+            <div style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              border: '1px solid rgba(148, 163, 184, 0.2)'
+            }}>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />
@@ -317,9 +335,9 @@ export default function WeatherChart({ data }: WeatherChartProps) {
                   <Legend />
                   <Line 
                     type="monotone" 
-                    dataKey="rainfall" 
+                    dataKey="precipitation" 
                     stroke="#06b6d4" 
-                    name="Rainfall (mm)"
+                    name="Precipitation (mm)"
                     strokeWidth={3}
                     dot={false}
                   />
@@ -328,8 +346,13 @@ export default function WeatherChart({ data }: WeatherChartProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="wind" className="mt-6">
-            <div className="bg-slate-900/30 rounded-xl p-4 border border-slate-700/30">
+          <TabsContent value="wind" style={{ marginTop: '1.5rem' }}>
+            <div style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              border: '1px solid rgba(148, 163, 184, 0.2)'
+            }}>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />
@@ -345,7 +368,7 @@ export default function WeatherChart({ data }: WeatherChartProps) {
                     type="monotone" 
                     dataKey="windSpeed" 
                     stroke="#8b5cf6" 
-                    name="Wind Speed (km/h)"
+                    name="Wind Speed (m/s)"
                     strokeWidth={3}
                     dot={false}
                   />
@@ -354,8 +377,13 @@ export default function WeatherChart({ data }: WeatherChartProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="humidity" className="mt-6">
-            <div className="bg-slate-900/30 rounded-xl p-4 border border-slate-700/30">
+          <TabsContent value="humidity" style={{ marginTop: '1.5rem' }}>
+            <div style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              border: '1px solid rgba(148, 163, 184, 0.2)'
+            }}>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#475569" opacity={0.3} />
