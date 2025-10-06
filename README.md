@@ -1,6 +1,6 @@
-# Skyloom - Weather Data Dashboard
+# Skyloom – Weather Data Dashboard
 
-A modern, responsive weather data dashboard built with Next.js, featuring historical weather analysis, interactive charts, and a beautiful user interface.
+Skyloom is a clean, fast weather analytics dashboard. It pairs a Next.js frontend with a lightweight Node/Express API to fetch and visualize historical weather data from NASA POWER, with a mock fallback for reliability.
 
 ## 🌟 Features
 
@@ -14,8 +14,8 @@ A modern, responsive weather data dashboard built with Next.js, featuring histor
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+
+- npm
 
 ### Installation
 
@@ -30,9 +30,10 @@ A modern, responsive weather data dashboard built with Next.js, featuring histor
    npm run install:all
    ```
 
-3. **Start development server**
+3. **Start development servers**
    ```bash
-   npm run dev
+npm run dev:backend    # starts API on http://localhost:3002
+npm run dev            # starts frontend on http://localhost:3000
    ```
 
 4. **Open your browser**
@@ -63,7 +64,6 @@ skyloom/
 │   │   ├── utils/
 │   │   └── constants/
 │   └── package.json
-├── mobile/            # React Native mobile app
 └── package.json       # Root package.json with workspaces
 ```
 
@@ -73,13 +73,12 @@ skyloom/
 
 ```bash
 # Development
-npm run dev              # Start frontend development server
-npm run dev:backend      # Start backend development server
-npm run dev:mobile       # Start mobile development server
+npm run dev              # Start frontend (Next.js)
+npm run dev:backend      # Start backend (Express)
 
 # Building
-npm run build            # Build frontend and shared packages
-npm run build:all        # Build all packages
+npm run build            # Build shared + frontend
+npm run build:backend    # Build backend
 
 # Utilities
 npm run clean            # Clean build artifacts
@@ -114,35 +113,26 @@ npm run install:all      # Install all dependencies
 
 ## 🌐 Deployment
 
-### Vercel Deployment
-This project is optimized for Vercel deployment. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+### Vercel (Recommended)
+The frontend deploys on Vercel; the backend runs separately (e.g., a small VM or a serverless host). Point the frontend to the backend URL via `NEXT_PUBLIC_API_URL`.
 
-**Quick Deploy:**
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Set environment variables
-4. Deploy!
+Quick steps:
+1) Push to GitHub and import the repo in Vercel
+2) Project: set Framework = Next.js
+3) Environment Variables:
+   - `NEXT_PUBLIC_API_URL` = https://your-backend.example.com
+4) Deploy
 
 ### Environment Variables
 
 ```bash
-# Required
-NEXT_PUBLIC_API_URL=https://your-api-domain.com
-
-# Optional
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
-NEXT_PUBLIC_NASA_API_KEY=your_nasa_api_key
+# Required (Frontend → Backend base URL)
+NEXT_PUBLIC_API_URL=https://your-backend.example.com
 ```
 
 ## 📱 Mobile App
 
-The mobile app is built with React Native and Expo. To run it:
-
-```bash
-cd mobile
-npm install
-npm run dev
-```
+The mobile app has been removed from this repository to simplify deployment. Focus is on a great web experience.
 
 ## 🎨 UI Components
 
@@ -163,11 +153,7 @@ Weather data is presented through:
 
 ## 🔐 Authentication
 
-Simple authentication system with:
-- Login/logout functionality
-- Session management
-- Protected routes
-- User context management
+Basic demo auth with localStorage is included for the dashboard flow. Replace with your provider (AuthJS, Clerk, etc.) for production.
 
 ## 🌍 Weather Data
 
@@ -198,6 +184,6 @@ If you encounter any issues:
 
 ---
 
-**Built with ❤️ using Next.js, TypeScript, and modern web technologies.**
+**Built with using Next.js, TypeScript, and modern web technologies.**
 
 <!-- Updated for Vercel deployment -->

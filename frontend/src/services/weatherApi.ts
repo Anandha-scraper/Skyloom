@@ -1,7 +1,7 @@
 import { WeatherDataPoint, WeatherSummary } from '@skyloom/shared';
 
-const API_BASE_URL = 'http://localhost:3002/api';
-console.log('Using hardcoded API_BASE_URL:', API_BASE_URL);
+const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+const API_BASE_URL = `${API_ORIGIN.replace(/\/$/, '')}/api`;
 
 interface ApiResponse<T> {
   success: boolean;
@@ -15,7 +15,6 @@ export class WeatherApiService {
 
   constructor() {
     this.baseUrl = API_BASE_URL;
-    console.log('WeatherApiService initialized with baseUrl:', this.baseUrl);
   }
 
   private async makeRequest<T>(endpoint: string, params: Record<string, string>): Promise<T> {
@@ -23,8 +22,6 @@ export class WeatherApiService {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.append(key, value);
     });
-
-    console.log(`Making API request to: ${url.toString()}`);
 
     try {
       const response = await fetch(url.toString(), {

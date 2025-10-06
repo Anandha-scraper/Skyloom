@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";

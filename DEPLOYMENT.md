@@ -1,188 +1,71 @@
-# Skyloom - Vercel Deployment Guide
+# Deploying Skyloom
+
+This guide walks you through deploying the Skyloom web app (Next.js) to Vercel and the API (Express) to a separate host.
 
 ## Overview
-This guide will help you deploy the Skyloom weather dashboard to Vercel. The project is a Next.js application with a monorepo structure.
+- Frontend: Next.js (deployed on Vercel)
+- Backend: Express API (deploy to your VM/provider)
+- Shared package: bundled into each app during build
 
-## Prerequisites
-- Vercel account
-- GitHub repository with the cleaned code
-- Environment variables configured
+## 1) Backend (Express) Deployment
+You can run the backend anywhere Node 18+ is available. Example with a simple VM:
 
-## Project Structure
-```
-skyloom/
-├── frontend/          # Next.js application (main deployment target)
-├── backend/           # Express.js API (optional for Vercel)
-├── shared/            # Shared utilities and types
-├── mobile/            # React Native app (not deployed to Vercel)
-├── vercel.json        # Vercel configuration
-└── package.json       # Root package.json with workspaces
-```
-
-## Deployment Steps
-
-### 1. Prepare Your Repository
-The project has been cleaned up with the following changes:
-- ✅ Removed `node_modules/` directories
-- ✅ Removed `dist/` build folders
-- ✅ Removed mobile-specific files and setup scripts
-- ✅ Updated package names from `@climatesight/*` to `@skyloom/*`
-- ✅ Configured Vercel settings
-- ✅ Optimized for production deployment
-
-### 2. Environment Variables
-Set up the following environment variables in Vercel:
-
-#### Required Environment Variables:
-```
-NEXT_PUBLIC_API_URL=https://your-api-domain.com
-```
-
-#### Optional Environment Variables:
-```
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
-NEXT_PUBLIC_NASA_API_KEY=your_nasa_api_key
-```
-
-### 3. Deploy to Vercel
-
-#### Option A: Deploy via Vercel CLI
+1) SSH into your server and install Node 18+
+2) Clone your repo and install deps for shared + backend
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login to Vercel
-vercel login
-
-# Deploy from project root
-vercel
-
-# Follow the prompts:
-# - Set up and deploy? Yes
-# - Which scope? [Your account]
-# - Link to existing project? No
-# - Project name: skyloom
-# - Directory: ./frontend
-# - Override settings? No
+cd shared && npm ci && npm run build
+cd ../backend && npm ci && npm run build
 ```
-
-#### Option B: Deploy via Vercel Dashboard
-1. Go to [vercel.com](https://vercel.com)
-2. Click "New Project"
-3. Import your GitHub repository
-4. Configure the project:
-   - **Framework Preset**: Next.js
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `.next`
-   - **Install Command**: `npm install`
-
-### 4. Configure Build Settings
-In your Vercel project settings:
-
-#### Build & Development Settings:
-- **Framework Preset**: Next.js
-- **Root Directory**: `frontend`
-- **Build Command**: `npm run build`
-- **Output Directory**: `.next`
-- **Install Command**: `npm install`
-
-#### Environment Variables:
-Add the environment variables mentioned in step 2.
-
-### 5. Monorepo Configuration
-The project uses npm workspaces. Vercel will automatically:
-- Install dependencies from the root `package.json`
-- Build the shared package first
-- Then build the frontend application
-
-### 6. Custom Domain (Optional)
-1. Go to your project settings in Vercel
-2. Navigate to "Domains"
-3. Add your custom domain
-4. Configure DNS settings as instructed
-
-## Post-Deployment
-
-### 1. Verify Deployment
-- Check that the application loads correctly
-- Test the login functionality
-- Verify weather data displays properly
-- Check that all routes work (/, /dashboard)
-
-### 2. Monitor Performance
-- Use Vercel Analytics to monitor performance
-- Check build logs for any issues
-- Monitor function execution if using API routes
-
-### 3. Backend Considerations
-If you need the backend API:
-- Deploy the backend separately (Railway, Render, or another service)
-- Update `NEXT_PUBLIC_API_URL` to point to your backend
-- Or convert backend routes to Next.js API routes in `frontend/src/app/api/`
-
-## Troubleshooting
-
-### Common Issues:
-
-#### Build Failures:
-- Ensure all dependencies are properly installed
-- Check that the shared package builds successfully
-- Verify TypeScript compilation
-
-#### Environment Variables:
-- Make sure all required environment variables are set
-- Check that variable names match exactly (case-sensitive)
-
-#### Routing Issues:
-- Verify that the `vercel.json` configuration is correct
-- Check that Next.js routing is properly configured
-
-#### Package Import Errors:
-- Ensure all `@skyloom/shared` imports are updated
-- Verify the shared package builds before the frontend
-
-### Getting Help:
-- Check Vercel deployment logs
-- Review the Vercel documentation
-- Check the project's GitHub issues
-
-## Performance Optimization
-
-### Already Implemented:
-- ✅ Standalone output for better performance
-- ✅ Optimized package imports
-- ✅ Proper image domains configuration
-- ✅ Clean build process
-
-### Additional Optimizations:
-- Enable Vercel Analytics
-- Configure caching headers
-- Use Vercel's Edge Functions if needed
-- Implement proper error boundaries
-
-## Security Considerations
-- Environment variables are properly configured
-- API keys are not exposed in client-side code
-- Proper CORS configuration for API calls
-- Authentication state management
-
----
-
-## Quick Start Commands
-
+3) Configure environment
 ```bash
-# Local development
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-
-# Clean build artifacts
-npm run clean
+# backend/.env
+PORT=3002
+NODE_ENV=production
+FRONTEND_URL=https://your-frontend.vercel.app
+JWT_SECRET=replace-me
+```
+4) Start the server (use a process manager like pm2 or systemd)
+```bash
+node dist/index.js
+# or with pm2
+pm2 start dist/index.js --name skyloom-api
+```
+5) Put a reverse proxy (nginx) in front of port 3002 with TLS, e.g.
+```nginx
+location / {
+  proxy_pass http://127.0.0.1:3002;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+}
 ```
 
-Your Skyloom weather dashboard is now ready for deployment to Vercel! 🌍⛅
+## 2) Frontend (Next.js) on Vercel
+1) Push your code to GitHub
+2) Import the repo in Vercel (Framework Preset: Next.js)
+3) Environment Variables (Project Settings → Environment Variables):
+   - NEXT_PUBLIC_API_URL = https://api.yourdomain.com
+4) Deploy
+
+Notes:
+- Vercel reads `frontend/package.json` to build the Next.js app.
+- Root `vercel.json` routes requests to `frontend/`.
+
+## 3) Local Development
+```bash
+npm run dev:backend    # http://localhost:3002
+npm run dev            # http://localhost:3000
+```
+The frontend calls `${NEXT_PUBLIC_API_URL}/api/...`. For local dev, `frontend/next.config.js` defaults to `http://localhost:3002`.
+
+## 4) Troubleshooting
+- CORS: Ensure `FRONTEND_URL` in backend `.env` matches your Vercel domain
+- 404 /api: The frontend calls your external API: `${NEXT_PUBLIC_API_URL}/api/...`
+- Timeouts: Check server logs and any reverse proxy timeouts (nginx)
+- Env drift: Verify Vercel project has `NEXT_PUBLIC_API_URL` set correctly
+
+## 5) Security Notes
+- Rotate `JWT_SECRET` before production
+- Reduce logs in production
+- Consider rate limits and WAF rules
+
+Happy shipping!

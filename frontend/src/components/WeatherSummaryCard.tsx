@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LucideIcon, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { getTrendInfo } from "@skyloom/shared";
 

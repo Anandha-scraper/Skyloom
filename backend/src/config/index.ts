@@ -32,8 +32,7 @@ export const config = {
   
   // Weather API configuration
   weatherApi: {
-    openWeatherMapKey: process.env.OPENWEATHERMAP_API_KEY,
-    weatherApiKey: process.env.WEATHERAPI_KEY,
+    // Reserved for future weather providers. Currently unused.
   },
   
   

@@ -11,22 +11,18 @@ import {
   NASA_API_CONFIG
 } from '@skyloom/shared';
 import { NasaService } from './nasaService.js';
-import { RealWeatherService } from './realWeatherService.js';
 
 export class WeatherService {
   private mockData: WeatherDataPoint[];
   private nasaService: NasaService;
-  private realWeatherService: RealWeatherService;
   private useNasaApi: boolean;
-  private useRealWeather: boolean;
+  
 
-  constructor(useNasaApi: boolean = true, useRealWeather: boolean = true) {
+  constructor(useNasaApi: boolean = true) {
     // Generate mock data once on service initialization
     this.mockData = generateMockData(1990, 2030);
     this.nasaService = new NasaService();
-    this.realWeatherService = new RealWeatherService();
     this.useNasaApi = useNasaApi;
-    this.useRealWeather = useRealWeather;
   }
 
   async getWeatherData(
@@ -35,15 +31,6 @@ export class WeatherService {
     endDate: string,
     timeResolution: TimeResolution = 'daily'
   ): Promise<WeatherDataPoint[]> {
-    // Try real weather API first
-    if (this.useRealWeather) {
-      try {
-        return await this.realWeatherService.getWeatherData(location, startDate, endDate);
-      } catch (error) {
-        console.error('Real weather API failed, trying NASA API:', error);
-      }
-    }
-
     // Fall back to NASA API
     if (this.useNasaApi) {
       try {
